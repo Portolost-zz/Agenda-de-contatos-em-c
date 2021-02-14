@@ -80,7 +80,8 @@ int menuAlterar(char *nomeContato){
     getchar();
     return opcao;
 }
-void alterar(char **buffer, char *nomeContato){
+char **alterar(char **buffer, char *nomeContato){
+    int datatam = 0, p = 0;
     char **dados, *pesquisa;
 
     pesquisa = pesquisar(buffer, nomeContato);
@@ -94,18 +95,33 @@ void alterar(char **buffer, char *nomeContato){
         case 5: fgets(dados[4], CONTATO, stdin); break;
         case 6: exit(2);
     }
+    for (int i = 0; i < DADOS; i++)
+      datatam += strlen(dados[i]);
 
+    pesquisa = realloc(pesquisa, datatam * sizeof(char));
+
+    for (int i = 0; i < DADOS; i++, p++){
+      for (int j = 0; j < datatam; j++, p++){
+        if (dados[i][j]== '\0')
+          break;
+        pesquisa[p] = dados[i][j];
+        if (dados[i][j]== '\n')
+          p--;
+      }
+      pesquisa[p] = ';';
+    }
+  return buffer;
 }
 
 void alterarContato(){
-    char *nomeContato, *pesquisa, **buffer, ch;
+    char *nomeContato, *pesquisa, **buffer;
 
     nomeContato = (char*)malloc(NOME * sizeof(char));
 
     printf("Nome do contato: ");
     fgets(nomeContato, sizeof(nomeContato), stdin);
 
-    alterar(carregarBuffer(), nomeContato);
+    buffer = alterar(carregarBuffer(), nomeContato);
 }
 
 int menuPrincipal(){
@@ -134,6 +150,6 @@ int main(){
             case 4: alterarContato(); break;
             case 6: system("clear"); exit(1);
         }
-        system("clear");
+        system("cls");
     }
 }   

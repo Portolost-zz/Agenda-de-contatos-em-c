@@ -113,6 +113,16 @@ char **alterar(char **buffer, char *nomeContato){
   return buffer;
 }
 
+void escreverBuffer(char **buffer){
+    FILE *arq;
+
+    arq = fopen("contatos.dat", "w");
+    for (int i = 0; i < 2 ; i++){
+      fputs(buffer[i], arq);
+    }
+    fclose(arq);
+}
+
 void alterarContato(){
     char *nomeContato, *pesquisa, **buffer;
 
@@ -122,6 +132,7 @@ void alterarContato(){
     fgets(nomeContato, sizeof(nomeContato), stdin);
 
     buffer = alterar(carregarBuffer(), nomeContato);
+    escreverBuffer(buffer);
 }
 
 int menuPrincipal(){

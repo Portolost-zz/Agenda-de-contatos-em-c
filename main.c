@@ -120,6 +120,7 @@ void escreverBuffer(char **buffer){
     for (int i = 0; i < 2 ; i++){
       fputs(buffer[i], arq);
     }
+    free(buffer);
     fclose(arq);
 }
 

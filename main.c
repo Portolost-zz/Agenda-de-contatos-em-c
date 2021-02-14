@@ -125,7 +125,7 @@ void escreverBuffer(char **buffer){
 }
 
 void alterarContato(){
-    char *nomeContato, *pesquisa, **buffer;
+    char *nomeContato, **buffer;
 
     nomeContato = (char*)malloc(NOME * sizeof(char));
 
@@ -133,6 +133,25 @@ void alterarContato(){
     fgets(nomeContato, sizeof(nomeContato), stdin);
 
     buffer = alterar(carregarBuffer(), nomeContato);
+    escreverBuffer(buffer);
+}
+char **remover(char **buffer, char *nomeContato){
+    char **dados, *pesquisa;
+
+    pesquisa = pesquisar(buffer, nomeContato);
+    pesquisa = realloc(pesquisa, 0);
+
+    return buffer;
+}
+void removerContato(){
+    char *nomeContato, **buffer;
+
+    nomeContato = (char*)malloc(NOME * sizeof(char));
+
+    printf("Nome do contato: ");
+    fgets(nomeContato, sizeof(nomeContato), stdin);
+
+    buffer = remover(carregarBuffer(), nomeContato);
     escreverBuffer(buffer);
 }
 
@@ -159,6 +178,7 @@ int main(){
 
     while(1){
         switch(menuPrincipal()){
+            case 2: removerContato(); break;
             case 4: alterarContato(); break;
             case 6: system("clear"); exit(1);
         }

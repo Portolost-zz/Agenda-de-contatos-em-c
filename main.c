@@ -55,11 +55,9 @@ char **dadosContato(char *contato){
     char **dados, lim[] = {NOME, ENDERECO, NUM, NUM, DATA};
 
     dados = (char**)malloc(DADOS * sizeof(char*));
-
-    for (int i = 0; i < DADOS; i++)
-        dados[i] = (char*)malloc(lim[i] * sizeof(char));
     
     for (int i = 0; i < DADOS; i++, p++){
+        dados[i] = (char*)malloc(lim[i] * sizeof(char));
         for (int j = 0; j < lim[i]; j++, p++){
             if (contato[p] == ';')
                 break;
@@ -72,7 +70,7 @@ char **dadosContato(char *contato){
 int menuAlterar(char *nomeContato){
     int opcao;
 
-    printf("=========================== Alterar ============================\n", nomeContato);
+    printf("=========================== Alterar ============================\n");
     printf("= (1) Nome\t\t\t");
     printf("(2) Endereço                   =\n");
     printf("= (3) Telefone Residencial\t");
@@ -117,17 +115,29 @@ char **alterar(char **buffer, char *nomeContato){
   return buffer;
 }
 
-void escreverBuffer(char **buffer){
+void escreverBuffer(char **buffer, int nCont){
     FILE *arq;
 
     arq = fopen("contatos.dat", "w");
-    for (int i = 0; i < 2 ; i++){
+
+    fprintf(arq, "%d\n", nCont);
+
+    for (int i = 0; i < nCont ; i++){
       fputs(buffer[i], arq);
     }
+
     free(buffer);
     fclose(arq);
 }
+int numeroContatos(int add){
+    FILE *arq; 
+    int quant;
 
+    arq = fopen("contatos.dat", "r");
+    quant = (fgetc(arq) - '0') + add;
+    fclose(arq);
+    return quant;
+}
 void alterarContato(){
     char *nomeContato, **buffer;
 
@@ -137,7 +147,7 @@ void alterarContato(){
     fgets(nomeContato, sizeof(nomeContato), stdin);
 
     buffer = alterar(carregarBuffer(), nomeContato);
-    escreverBuffer(buffer);
+    escreverBuffer(buffer, numeroContatos(0));
 }
 
 char **remover(char **buffer, char *nomeContato){
@@ -158,7 +168,7 @@ void removerContato(){
     fgets(nomeContato, sizeof(nomeContato), stdin);
 
     buffer = remover(carregarBuffer(), nomeContato);
-    escreverBuffer(buffer);
+    escreverBuffer(buffer, numeroContatos(-1));
 }
 
 int menuPrincipal(){

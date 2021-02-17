@@ -5,7 +5,7 @@
 
 #define NOME 30
 #define ENDERECO 100
-#define NUM 20
+#define NUM 10
 #define DATA 10
 #define CONTATOS 30
 #define CONTATO 200
@@ -23,16 +23,20 @@ void verificarExistencia(){
 char **carregarBuffer(){
     FILE *arq;
     char **buffer;
+    int quant;
 
     arq = fopen("contatos.dat", "r");
+    quant = fgetc(arq) - '0';
+    fgetc(arq);
 
     buffer = (char**)malloc(CONTATOS * sizeof(char*));
 
-    for (int i = 0; i < CONTATOS; i++)
+    for (int i = 0; i < quant; i++){
         buffer[i] = (char*)malloc(CONTATO * sizeof(char));
+        fgets(buffer[i], CONTATO * sizeof(char), arq);
+        puts(buffer[i]);
+    }
         
-    for (int i = 0; fgets(buffer[i], CONTATO * sizeof(char), arq) != NULL; i++);
-
     fclose(arq);
     return buffer;
 }
@@ -68,7 +72,7 @@ char **dadosContato(char *contato){
 int menuAlterar(char *nomeContato){
     int opcao;
 
-    printf("========================= Alterar %s ======================\n", nomeContato);
+    printf("=========================== Alterar ============================\n", nomeContato);
     printf("= (1) Nome\t\t\t");
     printf("(2) Endereço                   =\n");
     printf("= (3) Telefone Residencial\t");
@@ -135,6 +139,7 @@ void alterarContato(){
     buffer = alterar(carregarBuffer(), nomeContato);
     escreverBuffer(buffer);
 }
+
 char **remover(char **buffer, char *nomeContato){
     char **dados, *pesquisa;
 
@@ -143,6 +148,7 @@ char **remover(char **buffer, char *nomeContato){
 
     return buffer;
 }
+
 void removerContato(){
     char *nomeContato, **buffer;
 

@@ -48,6 +48,8 @@ contato** carregar_lista_encadeada(lista_encadeada *lista){
                     break;
                 printf("%c", contatos[i]->inf[j][k]);
             }
+            if (j == 4)
+                fgetc(arq);
         }
         contatos[i]->proximo = contatos[i+1];
     }
@@ -124,6 +126,7 @@ void escrever_lista(contato **contatos, int n_cont){
                     break;
             }
         }
+        fputc('\n', arq);
     }
 }
 
@@ -144,11 +147,11 @@ int menu_alterar(contato *cont){
         getchar();
 
         switch(opcao){
-            case 1: fscanf(stdin, "%s", cont->inf[0]); break;
-            case 2: fscanf(stdin, "%s", cont->inf[1]); break;
-            case 3: fscanf(stdin, "%s", cont->inf[2]); break;
-            case 4: fscanf(stdin, "%s", cont->inf[3]); break;;
-            case 5: fscanf(stdin, "%s", cont->inf[4]); break;
+            case 1: fgets(cont->inf[0], sizeof(cont->inf[0]), stdin); cont->inf[0][strlen(cont->inf[0])-1] = cont->inf[0][strlen(cont->inf[0])]; break;
+            case 2: fgets(cont->inf[1], sizeof(cont->inf[1]), stdin); cont->inf[1][strlen(cont->inf[1])-1] = cont->inf[1][strlen(cont->inf[1])]; break;
+            case 3: fgets(cont->inf[2], sizeof(cont->inf[2]), stdin); cont->inf[2][strlen(cont->inf[2])-1] = cont->inf[2][strlen(cont->inf[2])]; break;
+            case 4: fgets(cont->inf[3], sizeof(cont->inf[3]), stdin); cont->inf[3][strlen(cont->inf[3])-1] = cont->inf[3][strlen(cont->inf[3])]; break;
+            case 5: fgets(cont->inf[4], sizeof(cont->inf[4]), stdin); cont->inf[4][strlen(cont->inf[4])-1] = cont->inf[4][strlen(cont->inf[4])]; break;
             case 6: return 0;
             default: printf("Opção Inválida (Pressione ENTER)"); getchar();
         }
@@ -169,7 +172,6 @@ void alterar_contato(lista_encadeada *lista, contato **contatos){
 
     contato_alterado = pesquisar_contato(lista, nome_cont);
     menu_alterar(contato_alterado);
-    puts(contatos[0]->inf[0]);
     escrever_lista(contatos, 3);
 }
 

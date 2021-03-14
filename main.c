@@ -124,7 +124,6 @@ void escrever_lista(contato **contatos, int n_cont){
                     break;
             }
         }
-        fputc('\n', arq);
     }
 }
 
@@ -146,10 +145,10 @@ int menu_alterar(contato *cont){
 
         switch(opcao){
             case 1: fscanf(stdin, "%s", cont->inf[0]); break;
-            case 2: fgets(cont->inf[1], sizeof(texto_t), stdin); break;
-            case 3: fgets(cont->inf[2], sizeof(texto_t), stdin); break;
-            case 4: fgets(cont->inf[3], sizeof(texto_t), stdin); break;
-            case 5: fgets(cont->inf[4], sizeof(texto_t), stdin); break;
+            case 2: fscanf(stdin, "%s", cont->inf[1]); break;
+            case 3: fscanf(stdin, "%s", cont->inf[2]); break;
+            case 4: fscanf(stdin, "%s", cont->inf[3]); break;;
+            case 5: fscanf(stdin, "%s", cont->inf[4]); break;
             case 6: return 0;
             default: printf("Opção Inválida (Pressione ENTER)"); getchar();
         }
@@ -166,11 +165,12 @@ void alterar_contato(lista_encadeada *lista, contato **contatos){
     printf("Nome do contato: ");
     fgets(nome_cont, sizeof(nome_cont), stdin);
 
+    nome_cont[strlen(nome_cont)-1] = nome_cont[strlen(nome_cont)];
+
     contato_alterado = pesquisar_contato(lista, nome_cont);
     menu_alterar(contato_alterado);
     puts(contatos[0]->inf[0]);
-    escrever_lista(contatos, 1);
-    carregar_lista_encadeada(lista);
+    escrever_lista(contatos, 3);
 }
 
 int menu_principal(lista_encadeada *lista, contato **contatos){

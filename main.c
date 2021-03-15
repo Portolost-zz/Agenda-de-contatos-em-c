@@ -27,36 +27,6 @@ lista_encadeada* criar_lista_encadeada(){
     return lista;
 }
 
-contato** carregar_lista_encadeada(lista_encadeada *lista){
-    FILE *arq;
-    contato **contatos;
-    int n_cont;
-
-    arq = fopen("contatos.dat", "r");
-    n_cont = fgetc(arq) - '0';
-    fgetc(arq);
-
-    contatos = (contato**)malloc(n_cont * sizeof(contato*));
-
-    for (int i = 0; i < n_cont; i++)
-        contatos[i] = criar_contato();
-
-    for (int i = 0; i < n_cont; i++){
-        for (int j = 0; j < 5; j++){
-            for (int k = 0; contatos[i]->inf[j][k] = fgetc(arq); k++){
-                if (contatos[i]->inf[j][k] == ';')
-                    break;
-                printf("%c", contatos[i]->inf[j][k]);
-            }
-            if (j == 4)
-                fgetc(arq);
-        }
-        contatos[i]->proximo = contatos[i+1];
-    }
-    lista->primeiro = contatos[0];
-    return contatos;
-}
-
 // inserir sempre no final
 void inserir_contato(lista_encadeada *lista, contato *novo){
     if (lista->primeiro == NULL)
@@ -68,6 +38,31 @@ void inserir_contato(lista_encadeada *lista, contato *novo){
         aux->proximo = novo;
     }
 }
+
+void carregar_lista_encadeada(lista_encadeada *lista){
+    FILE *arq;
+    contato *aux;
+    int n_cont;
+
+    arq = fopen("contatos.dat", "r");
+    n_cont = fgetc(arq) - '0';
+    fgetc(arq);
+
+    while (n_cont--){
+        aux = criar_contato();
+        for (int j = 0; j < 5; j++){
+            for (int k = 0; aux->inf[j][k] = fgetc(arq); k++){
+                if (aux->inf[j][k] == ';')
+                    break;
+                printf("%c", aux->inf[j][k]);
+            }
+            if (j == 4)
+                fgetc(arq);
+        }
+        inserir_contato(lista, aux);
+    }
+}
+
 
 // NULL: se o contato não existe na lista
 // !NULL: contato existe na lista
@@ -110,30 +105,31 @@ int tamanho_lista(lista_encadeada *lista){
     return cont;
 }
 
-void escrever_lista(contato **contatos, int n_cont){
+void escrever_lista(lista_encadeada *lista, int n_cont){
     FILE *arq;
+    contato *aux;
 
     arq = fopen("contatos.dat", "w");
     fprintf(arq, "%d\n", n_cont);
 
+    aux = lista->primeiro;
+
     for (int i = 0; i < n_cont; i++){
         for (int j = 0; j < 5; j++){
-            for (int k = 0; k < strlen(contatos[i]->inf[j]); k++){
-                if (contatos[i]->inf[j][strlen(contatos[i]->inf[j])] != ';')
-                    contatos[i]->inf[j][strlen(contatos[i]->inf[j])] = ';';
-                fputc(contatos[i]->inf[j][k], arq);
-                if (contatos[i]->inf[j][k] == ';')
+            for (int k = 0; k < strlen(aux->inf[j]); k++){
+                fputc(aux->inf[j][k], arq);
+                if (aux->inf[j][k] == ';')
                     break;
             }
         }
         fputc('\n', arq);
+        aux = aux->proximo;
     }
 }
 
 int menu_alterar(contato *cont){
     while(1){
         int opcao;
-        contato *aux = criar_contato();
 
         printf("=========================== Alterar ============================\n");
         printf("= (1) Nome\t\t\t");
@@ -147,18 +143,18 @@ int menu_alterar(contato *cont){
         getchar();
 
         switch(opcao){
-            case 1: fgets(cont->inf[0], sizeof(cont->inf[0]), stdin); cont->inf[0][strlen(cont->inf[0])-1] = cont->inf[0][strlen(cont->inf[0])]; break;
-            case 2: fgets(cont->inf[1], sizeof(cont->inf[1]), stdin); cont->inf[1][strlen(cont->inf[1])-1] = cont->inf[1][strlen(cont->inf[1])]; break;
-            case 3: fgets(cont->inf[2], sizeof(cont->inf[2]), stdin); cont->inf[2][strlen(cont->inf[2])-1] = cont->inf[2][strlen(cont->inf[2])]; break;
-            case 4: fgets(cont->inf[3], sizeof(cont->inf[3]), stdin); cont->inf[3][strlen(cont->inf[3])-1] = cont->inf[3][strlen(cont->inf[3])]; break;
-            case 5: fgets(cont->inf[4], sizeof(cont->inf[4]), stdin); cont->inf[4][strlen(cont->inf[4])-1] = cont->inf[4][strlen(cont->inf[4])]; break;
+            case 1: fgets(cont->inf[0], sizeof(cont->inf[0]), stdin); cont->inf[0][strlen(cont->inf[0])-1] = cont->inf[0][strlen(cont->inf[0])]; cont->inf[0][strlen(cont->inf[0])] = ';'; break;
+            case 2: fgets(cont->inf[1], sizeof(cont->inf[1]), stdin); cont->inf[1][strlen(cont->inf[1])-1] = cont->inf[1][strlen(cont->inf[1])]; cont->inf[1][strlen(cont->inf[1])] = ';'; break;
+            case 3: fgets(cont->inf[2], sizeof(cont->inf[2]), stdin); cont->inf[2][strlen(cont->inf[2])-1] = cont->inf[2][strlen(cont->inf[2])]; cont->inf[2][strlen(cont->inf[2])] = ';'; break;
+            case 4: fgets(cont->inf[3], sizeof(cont->inf[3]), stdin); cont->inf[3][strlen(cont->inf[3])-1] = cont->inf[3][strlen(cont->inf[3])]; cont->inf[3][strlen(cont->inf[3])] = ';'; break;
+            case 5: fgets(cont->inf[4], sizeof(cont->inf[4]), stdin); cont->inf[4][strlen(cont->inf[4])-1] = cont->inf[4][strlen(cont->inf[4])]; cont->inf[4][strlen(cont->inf[4])] = ';'; break;
             case 6: return 0;
             default: printf("Opção Inválida (Pressione ENTER)"); getchar();
         }
     }
 }
 
-void alterar_contato(lista_encadeada *lista, contato **contatos){
+void alterar_contato(lista_encadeada *lista){
     contato *contato_alterado;
     char *nome_cont;
     int n_cont;
@@ -172,10 +168,15 @@ void alterar_contato(lista_encadeada *lista, contato **contatos){
 
     contato_alterado = pesquisar_contato(lista, nome_cont);
     menu_alterar(contato_alterado);
-    escrever_lista(contatos, 3);
+    puts(lista->primeiro->inf[0]);
+    escrever_lista(lista, tamanho_lista(lista));
 }
 
-int menu_principal(lista_encadeada *lista, contato **contatos){
+void listar_contatos(lista_encadeada *lista){
+    
+}
+
+int menu_principal(lista_encadeada *lista){
     while(1){
         int opcao;
 
@@ -191,7 +192,8 @@ int menu_principal(lista_encadeada *lista, contato **contatos){
         getchar();
 
         switch(opcao){
-            case 4: alterar_contato(lista, contatos); break;
+            case 4: alterar_contato(lista); break;
+            case 5: listar_contatos(lista); break;
             case 6: system("clear"); return 0; break;
             default: printf("Opção Inválida (Pressione ENTER)"); getchar();
         }
@@ -199,11 +201,10 @@ int menu_principal(lista_encadeada *lista, contato **contatos){
 }
 int main(){
     lista_encadeada *lista;
-    contato **contatos;
     setlocale(LC_ALL, "portuguese-brazilian");
     verificar_existencia();
     lista = criar_lista_encadeada();
-    contatos = carregar_lista_encadeada(lista);
-    menu_principal(lista, contatos);
+    carregar_lista_encadeada(lista);
+    menu_principal(lista);
     return 0;
 }

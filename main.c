@@ -78,12 +78,23 @@ contato* pesquisar_contato(lista_encadeada *lista, char *cont){
 
 // 1: se foi excluído com sucesso
 // 0: se contato não existe na lista
-int excluir_contato(lista_encadeada *lista, char *nome_cont){
-    contato *aux = pesquisar_contato(lista, nome_cont);
-    if (aux == NULL)
-        return 0;
-    aux->proximo = aux->proximo->proximo;
-    return 1;
+int excluir_contato(lista_encadeada *lista, char *cont){
+    contato *aux;
+
+    aux = lista->primeiro;
+    if (strstr(aux->inf[0], cont) != NULL){
+            aux->proximo = aux->proximo->proximo;
+            return 1;
+        }
+
+    while (aux != NULL){
+        if (strstr(aux->proximo->inf[0], cont) != NULL){
+            aux->proximo = aux->proximo->proximo;
+            return 1;
+        }
+        aux = aux->proximo;
+    }
+    return 0;
 }
 
 void verificar_existencia(){
@@ -171,9 +182,64 @@ void alterar_contato(lista_encadeada *lista){
     puts(lista->primeiro->inf[0]);
     escrever_lista(lista, tamanho_lista(lista));
 }
+void escrever_contato(contato *cont){
+    for (int j = 0; j < 5; j++){
+        for (int k = 0; k < 80; k++){
+            if (cont->inf[j][k] == ';'){
+                putchar('\n');
+                break;
+            }
+            printf("%c", cont->inf[j][k]);
+        }
+    }
+}
 
-void listar_contatos(lista_encadeada *lista){
+void listar_contatos(lista_encadeada *lista, int n_cont){
+    contato *aux = lista->primeiro;
+    while (n_cont--){
+        escrever_contato(aux);
+        aux = aux->proximo;
+    }
+}
+
+void pesquisar(lista_encadeada *lista){
+    char *nome_cont;
+
+    nome_cont = (char*)malloc(sizeof(80 * sizeof(char)));
+
+    printf("Nome do contato: ");
+    fgets(nome_cont, sizeof(nome_cont), stdin);
+
+    nome_cont[strlen(nome_cont)-1] = nome_cont[strlen(nome_cont)];
+
+    escrever_contato(pesquisar_contato(lista, nome_cont));
+}
+
+void excluir(lista_encadeada *lista){
+    char *nome_cont;
+
+    nome_cont = (char*)malloc(sizeof(80 * sizeof(char)));
+
+    printf("Nome do contato: ");
+    fgets(nome_cont, sizeof(nome_cont), stdin);
+
+    nome_cont[strlen(nome_cont)-1] = nome_cont[strlen(nome_cont)];
     
+    excluir_contato(lista, nome_cont);
+    escrever_lista(lista, tamanho_lista(lista));
+}
+
+void adicionar_contato(lista_encadeada *lista){
+    contato *novo_contato;
+
+    novo_contato = criar_contato();
+    printf("Nome do contato: ");
+    fgets(novo_contato->inf[0], sizeof(novo_contato->inf[0]), stdin);
+
+    novo_contato->inf[0][strlen(novo_contato->inf[0])-1] = novo_contato->inf[0][strlen(novo_contato->inf[0])];
+
+    inserir_contato(lista, novo_contato);
+    escrever_lista(lista, tamanho_lista(lista));
 }
 
 int menu_principal(lista_encadeada *lista){
@@ -192,8 +258,11 @@ int menu_principal(lista_encadeada *lista){
         getchar();
 
         switch(opcao){
+            case 1: adicionar_contato(lista);break;
+            case 2: excluir(lista);break;
+            case 3: pesquisar(lista);break;
             case 4: alterar_contato(lista); break;
-            case 5: listar_contatos(lista); break;
+            case 5: listar_contatos(lista, tamanho_lista(lista)); break;
             case 6: system("clear"); return 0; break;
             default: printf("Opção Inválida (Pressione ENTER)"); getchar();
         }

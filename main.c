@@ -154,11 +154,11 @@ int menu_alterar(contato *cont){
         getchar();
 
         switch(opcao){
-            case 1: fgets(cont->inf[0], sizeof(cont->inf[0]), stdin); cont->inf[0][strlen(cont->inf[0])-1] = cont->inf[0][strlen(cont->inf[0])]; cont->inf[0][strlen(cont->inf[0])] = ';'; break;
-            case 2: fgets(cont->inf[1], sizeof(cont->inf[1]), stdin); cont->inf[1][strlen(cont->inf[1])-1] = cont->inf[1][strlen(cont->inf[1])]; cont->inf[1][strlen(cont->inf[1])] = ';'; break;
-            case 3: fgets(cont->inf[2], sizeof(cont->inf[2]), stdin); cont->inf[2][strlen(cont->inf[2])-1] = cont->inf[2][strlen(cont->inf[2])]; cont->inf[2][strlen(cont->inf[2])] = ';'; break;
-            case 4: fgets(cont->inf[3], sizeof(cont->inf[3]), stdin); cont->inf[3][strlen(cont->inf[3])-1] = cont->inf[3][strlen(cont->inf[3])]; cont->inf[3][strlen(cont->inf[3])] = ';'; break;
-            case 5: fgets(cont->inf[4], sizeof(cont->inf[4]), stdin); cont->inf[4][strlen(cont->inf[4])-1] = cont->inf[4][strlen(cont->inf[4])]; cont->inf[4][strlen(cont->inf[4])] = ';'; break;
+            case 1: printf("Nome do contato: ");fgets(cont->inf[0], sizeof(cont->inf[0]), stdin); cont->inf[0][strlen(cont->inf[0])-1] = cont->inf[0][strlen(cont->inf[0])]; cont->inf[0][strlen(cont->inf[0])] = ';'; break;
+            case 2: printf("Novo endereço: ");fgets(cont->inf[1], sizeof(cont->inf[1]), stdin); cont->inf[1][strlen(cont->inf[1])-1] = cont->inf[1][strlen(cont->inf[1])]; cont->inf[1][strlen(cont->inf[1])] = ';'; break;
+            case 3: printf("Novo telefone Residencial: ");fgets(cont->inf[2], sizeof(cont->inf[2]), stdin); cont->inf[2][strlen(cont->inf[2])-1] = cont->inf[2][strlen(cont->inf[2])]; cont->inf[2][strlen(cont->inf[2])] = ';'; break;
+            case 4: printf("Novo telefone Celular: ");fgets(cont->inf[3], sizeof(cont->inf[3]), stdin); cont->inf[3][strlen(cont->inf[3])-1] = cont->inf[3][strlen(cont->inf[3])]; cont->inf[3][strlen(cont->inf[3])] = ';'; break;
+            case 5: printf("Novo telefone Celular: ");fgets(cont->inf[4], sizeof(cont->inf[4]), stdin); cont->inf[4][strlen(cont->inf[4])-1] = cont->inf[4][strlen(cont->inf[4])]; cont->inf[4][strlen(cont->inf[4])] = ';'; break;
             case 6: return 0;
             default: printf("Opção Inválida (Pressione ENTER)"); getchar();
         }
@@ -235,8 +235,29 @@ void adicionar_contato(lista_encadeada *lista){
     novo_contato = criar_contato();
     printf("Nome do contato: ");
     fgets(novo_contato->inf[0], sizeof(novo_contato->inf[0]), stdin);
-
     novo_contato->inf[0][strlen(novo_contato->inf[0])-1] = novo_contato->inf[0][strlen(novo_contato->inf[0])];
+    novo_contato->inf[0][strlen(novo_contato->inf[0])] = ';';
+    
+    printf("Endereço do contato: ");
+    fgets(novo_contato->inf[1], sizeof(novo_contato->inf[1]), stdin);
+    novo_contato->inf[1][strlen(novo_contato->inf[1])-1] = novo_contato->inf[0][strlen(novo_contato->inf[1])];
+    novo_contato->inf[1][strlen(novo_contato->inf[1])] = ';';
+
+    printf("Telefone Residencial: ");   
+    fgets(novo_contato->inf[2], sizeof(novo_contato->inf[2]), stdin);
+    novo_contato->inf[2][strlen(novo_contato->inf[2])-1] = novo_contato->inf[2][strlen(novo_contato->inf[2])];
+    novo_contato->inf[2][strlen(novo_contato->inf[2])] = ';';
+
+    printf("Telefone Celular: ");
+    fgets(novo_contato->inf[3], sizeof(novo_contato->inf[3]), stdin);
+    novo_contato->inf[3][strlen(novo_contato->inf[3])-1] = novo_contato->inf[3][strlen(novo_contato->inf[3])];
+    novo_contato->inf[3][strlen(novo_contato->inf[3])] = ';';
+
+    printf("Data de nascimento: ");
+    fgets(novo_contato->inf[4], sizeof(novo_contato->inf[4]), stdin);
+    novo_contato->inf[4][strlen(novo_contato->inf[4])-1] = novo_contato->inf[0][strlen(novo_contato->inf[4])];
+    novo_contato->inf[4][strlen(novo_contato->inf[4])] = ';';
+
 
     inserir_contato(lista, novo_contato);
     escrever_lista(lista, tamanho_lista(lista));

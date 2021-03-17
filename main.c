@@ -51,28 +51,24 @@ void carregar_lista_encadeada(lista_encadeada *lista){
     while (n_cont--){
         aux = criar_contato();
         for (int j = 0; j < 5; j++){
-            for (int k = 0; aux->inf[j][k] = fgetc(arq); k++){
+            for (int k = 0; aux->inf[j][k] = fgetc(arq); k++)
                 if (aux->inf[j][k] == ';')
                     break;
-                printf("%c", aux->inf[j][k]);
-            }
             if (j == 4)
                 fgetc(arq);
         }
         inserir_contato(lista, aux);
     }
-}
-
+    fclose(arq);
+} 
 
 // NULL: se o contato não existe na lista
 // !NULL: contato existe na lista
 contato* pesquisar_contato(lista_encadeada *lista, char *cont){
     contato *aux = lista->primeiro;
-    if (strstr(aux->inf[0], cont) != NULL)
-        return aux;
 
     while (aux != NULL){
-        if (strstr(aux->proximo->inf[0], cont) != NULL)
+        if (strstr(aux->inf[0], cont) != NULL)
             return aux;
         aux = aux->proximo;
     }
@@ -83,16 +79,19 @@ contato* pesquisar_contato(lista_encadeada *lista, char *cont){
 // 0: se contato não existe na lista
 int excluir_contato(lista_encadeada *lista, char *cont){
     contato *aux;
-    
+
     if (strstr(lista->primeiro->inf[0], cont) != NULL){
         lista->primeiro = lista->primeiro->proximo;
         return 1;
     }
 
-    aux = pesquisar_contato(lista, cont);
-    if (aux != NULL){
-        aux->proximo = aux->proximo->proximo;
-        return 1;
+    aux = lista->primeiro;
+    while (aux != NULL){
+        if (strstr(aux->proximo->inf[0], cont) != NULL){
+            aux->proximo = aux->proximo->proximo;
+            return 1;
+        }
+        aux = aux->proximo;
     }
     return 0;
 }
@@ -136,6 +135,7 @@ void escrever_lista(lista_encadeada *lista, int n_cont){
         fputc('\n', arq);
         aux = aux->proximo;
     }
+    fclose(arq);
 }
 
 int menu_alterar(contato *cont){
@@ -179,7 +179,6 @@ void alterar_contato(lista_encadeada *lista){
 
     contato_alterado = pesquisar_contato(lista, nome_cont);
     menu_alterar(contato_alterado);
-    puts(lista->primeiro->inf[0]);
     escrever_lista(lista, tamanho_lista(lista));
 }
 void escrever_contato(contato *cont){

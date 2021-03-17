@@ -68,8 +68,11 @@ void carregar_lista_encadeada(lista_encadeada *lista){
 // !NULL: contato existe na lista
 contato* pesquisar_contato(lista_encadeada *lista, char *cont){
     contato *aux = lista->primeiro;
+    if (strstr(aux->inf[0], cont) != NULL)
+        return aux;
+
     while (aux != NULL){
-        if (strstr(aux->inf[0], cont) != NULL)
+        if (strstr(aux->proximo->inf[0], cont) != NULL)
             return aux;
         aux = aux->proximo;
     }
@@ -80,19 +83,16 @@ contato* pesquisar_contato(lista_encadeada *lista, char *cont){
 // 0: se contato não existe na lista
 int excluir_contato(lista_encadeada *lista, char *cont){
     contato *aux;
+    
+    if (strstr(lista->primeiro->inf[0], cont) != NULL){
+        lista->primeiro = lista->primeiro->proximo;
+        return 1;
+    }
 
-    aux = lista->primeiro;
-    if (strstr(aux->inf[0], cont) != NULL){
-            aux->proximo = aux->proximo->proximo;
-            return 1;
-        }
-
-    while (aux != NULL){
-        if (strstr(aux->proximo->inf[0], cont) != NULL){
-            aux->proximo = aux->proximo->proximo;
-            return 1;
-        }
-        aux = aux->proximo;
+    aux = pesquisar_contato(lista, cont);
+    if (aux != NULL){
+        aux->proximo = aux->proximo->proximo;
+        return 1;
     }
     return 0;
 }
